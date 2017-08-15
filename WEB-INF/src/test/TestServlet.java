@@ -3,8 +3,14 @@ package test;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
+import java.util.Properties;
  
+@WebServlet(name = "t", urlPatterns = {"/tests/*"})
 public class TestServlet extends HttpServlet {
+	
+	private static final String LOCATION = "K:\\Programs\\apache-tomcat-9.0.0.M22\\webapps\\TestServlet\\WEB-INF\\config.conf";
+	
    @Override
    public void doGet(HttpServletRequest request, HttpServletResponse response)
                throws IOException, ServletException {
@@ -34,5 +40,38 @@ public class TestServlet extends HttpServlet {
       } finally {
          out.close();  // Always close the output writer
       }
+   }
+   
+   
+   
+   
+   @Override
+   public void init(){
+	   try{
+		   Properties pr = new Properties();
+		   File conf = new File(LOCATION);
+		   if (conf.exists() && conf.canRead()){
+			   System.out.println("Mondom a fájlból kiszedett adatokat:");
+			   pr.load(new FileInputStream(conf));
+			   String username = pr.getProperty("dbusername");
+			   String password = pr.getProperty("dbpassword");
+			   System.out.println("user: "  + username + " password: " + password);
+			   
+		   }else{
+			  System.out.println("Nincs meg a fájl");
+		   }
+	   } catch (Exception e){
+			e.printStackTrace(System.err);
+	   }
+   }
+   
+   @Override
+   public void destroy(){
+     
+   }
+   
+   @Override
+   public String getServletInfo(){
+    return "Ez egy teszt szervlet";
    }
 }
